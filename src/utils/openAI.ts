@@ -7,8 +7,11 @@ const genAI = apiBaseUrl
   ? new GoogleGenerativeAI(apiKey, apiBaseUrl)
   : new GoogleGenerativeAI(apiKey)
 
-export const startChatAndSendMessageStream = async(history: ChatMessage[], newMessage: string) => {
-  const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+export const startChatAndSendMessageStream = async (history: ChatMessage[], newMessage: string) => {
+  // 出现报错[GoogleGenerativeAI Error]: Error fetching from [404 Not Found] models/gemini-pro is not found for API version v1, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods时
+  // 修改模型 将gemini-pro修改为gemini-2.0-flash 
+  // const model = genAI.getGenerativeModel({ model: 'gemini-pro' })  // 20250304改
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
   const chat = model.startChat({
     history: history.map(msg => ({
