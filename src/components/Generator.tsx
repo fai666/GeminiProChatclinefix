@@ -110,6 +110,16 @@ export default () => {
       // })).slice(-maxHistoryMessages)
       // const timestamp = Date.now()
 
+      // 请求体 在 fetch 发送请求之前，添加 console.log() 确保完整数据结构符合预期
+      console.log("🛠️ Sending Request:", JSON.stringify({
+        messages: requestMessageList,
+        time: timestamp,
+        pass: storagePassword,
+        sign: await generateSignature({
+          t: timestamp,
+          m: requestMessageList?.[requestMessageList.length - 1]?.parts[0]?.text || '',
+        }),
+      }, null, 2));
 
       const response = await fetch('/api/generate', {
         method: 'POST',
