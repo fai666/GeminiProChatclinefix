@@ -49,8 +49,6 @@ export const post: APIRoute = async(context) => {
 
     return new Response(responseStream, { status: 200, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
 
-    console.log("🔍 Received Request Body:", req.body);
-    
   } catch (error) {
     console.error(error)
     const errorMessage = error.message
@@ -67,3 +65,5 @@ export const post: APIRoute = async(context) => {
     }), { status: 500 })
   }
 }
+
+console.log("🔍 Received Request Body:", req.body);
