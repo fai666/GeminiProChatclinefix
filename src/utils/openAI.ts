@@ -7,7 +7,11 @@ const genAI = apiBaseUrl
   ? new GoogleGenerativeAI(apiKey, apiBaseUrl)
   : new GoogleGenerativeAI(apiKey)
 
-export const startChatAndSendMessageStream = async (history: ChatMessage[], newMessage: string) => {
+// 改之前
+// export const startChatAndSendMessageStream = async (history: ChatMessage[], newMessage: string) => {
+
+// 方法1
+export const startChatAndSendMessageStream = async (history: ChatMessage[], newMessage: { parts: { text: string }[] }) => {
   // 出现报错[GoogleGenerativeAI Error]: Error fetching from [404 Not Found] models/gemini-pro is not found for API version v1, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods时
   // 修改模型 将gemini-pro修改为gemini-2.0-flash 
   // const model = genAI.getGenerativeModel({ model: 'gemini-pro' })  // 20250304改
@@ -39,7 +43,12 @@ export const startChatAndSendMessageStream = async (history: ChatMessage[], newM
   // const result = await chat.sendMessageStream({ parts: [{ text: newMessage }] }) 
 
   // GPT第二次修改，结合前端调用generate.ts的文件src\components\Generator.tsx
-  const result = await chat.sendMessageStream(newMessage) 
+  
+  // 改之前
+  // const result = await chat.sendMessageStream(newMessage) 
+  
+  // 方法1
+  const result = await chat.sendMessageStream(newMessage.parts)
   
   // console.log("Chat response:", result);
 
