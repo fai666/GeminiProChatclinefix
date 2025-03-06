@@ -19,6 +19,9 @@ export const startChatAndSendMessageStream = async (history: ChatMessage[], newM
       // parts: msg.parts.map(part => part.text).join(''), // Join parts into a single string
       // 在 openAI.ts 中，历史消息的 parts 被 错误地转换成了字符串，但它应该是一个 数组，其中每个 part 是一个 text 对象
       parts: msg.parts.map(part => ({ text: part.text })),
+
+      console.log(msg.parts);
+      
     })),
     generationConfig: {
       maxOutputTokens: 8000,
@@ -39,6 +42,9 @@ export const startChatAndSendMessageStream = async (history: ChatMessage[], newM
 
   // GPT第二次修改，结合前端调用generate.ts的文件src\components\Generator.tsx
   const result = await chat.sendMessageStream(newMessage) 
+
+  console.log(newMessage);
+  
 
 
 

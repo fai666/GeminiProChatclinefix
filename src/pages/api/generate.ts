@@ -44,10 +44,15 @@ export const post: APIRoute = async(context) => {
       parts: messages[messages.length - 1].parts.map(part => ({ text: part.text })) // 🛠️ 确保格式正确
     }
 
-
+    
 
     // Start chat and send message with streaming 开始聊天并发送消息
     const responseStream = await startChatAndSendMessageStream(history, newMessage)
+
+    console.log(history);
+    console.log(messages);
+    
+    
 
     return new Response(responseStream, { status: 200, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
   } catch (error) {
