@@ -20,8 +20,6 @@ export const startChatAndSendMessageStream = async (history: ChatMessage[], newM
       // 在 openAI.ts 中，历史消息的 parts 被 错误地转换成了字符串，但它应该是一个 数组，其中每个 part 是一个 text 对象
       parts: msg.parts.map(part => ({ text: part.text })),
 
-      console.log(msg.parts);
-      
     })),
     generationConfig: {
       maxOutputTokens: 8000,
@@ -31,9 +29,11 @@ export const startChatAndSendMessageStream = async (history: ChatMessage[], newM
       {category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE'},
       {category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE'},
       {category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE'}
-      ],
+    ],
   })
 
+  console.log(msg.parts),
+    
   // Use sendMessageStream for streaming responses
   // const result = await chat.sendMessageStream(newMessage)
 
