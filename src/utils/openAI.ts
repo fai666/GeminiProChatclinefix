@@ -41,6 +41,8 @@ export const startChatAndSendMessageStream = async (history: ChatMessage[], newM
   // GPT第二次修改，结合前端调用generate.ts的文件src\components\Generator.tsx
   const result = await chat.sendMessageStream(newMessage) 
   
+  console.log("Chat response:", result);
+
   const encodedStream = new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder()
