@@ -16,7 +16,9 @@ export const startChatAndSendMessageStream = async (history: ChatMessage[], newM
   const chat = model.startChat({
     history: history.map(msg => ({
       role: msg.role,
-      parts: msg.parts.map(part => part.text).join(''), // Join parts into a single string
+      // parts: msg.parts.map(part => part.text).join(''), // Join parts into a single string
+      // 在 openAI.ts 中，历史消息的 parts 被 错误地转换成了字符串，但它应该是一个 数组，其中每个 part 是一个 text 对象
+      parts: msg.parts.map(part => ({ text: part.text })),
     })),
     generationConfig: {
       maxOutputTokens: 8000,
@@ -30,7 +32,11 @@ export const startChatAndSendMessageStream = async (history: ChatMessage[], newM
   })
 
   // Use sendMessageStream for streaming responses
-  const result = await chat.sendMessageStream(newMessage)
+  // const result = await chat.sendMessageStream(newMessage)
+
+  // 发送流式请求
+  const result = await chat.sendMessageStream({ parts: [{ text: newMessage }] }) 
+
 
   const encodedStream = new ReadableStream({
     async start(controller) {

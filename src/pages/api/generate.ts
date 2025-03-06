@@ -1,5 +1,5 @@
-import { startChatAndSendMessageStream } from '@/utils/openAI'
 import { verifySignature } from '@/utils/auth'
+import { startChatAndSendMessageStream } from '@/utils/openAI'
 import type { APIRoute } from 'astro'
 
 const sitePassword = import.meta.env.SITE_PASSWORD || ''
@@ -35,9 +35,13 @@ export const post: APIRoute = async(context) => {
 
   try {
     const history = messages.slice(0, -1) // All messages except the last one
-    const newMessage = messages[messages.length - 1].parts.map(part => part.text).join('')
+    // 原代码
+    // const newMessage = messages[messages.length - 1].parts.map(part => part.text).join('')
 
-    // Start chat and send message with streaming
+    const newMessage = messages[messages.length - 1].parts.map(part => ({ text: part.text }))
+
+
+    // Start chat and send message with streaming 开始聊天并发送消息
     const responseStream = await startChatAndSendMessageStream(history, newMessage)
 
     return new Response(responseStream, { status: 200, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
