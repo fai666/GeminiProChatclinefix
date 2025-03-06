@@ -1,12 +1,12 @@
+import type { ChatMessage, ErrorMessage } from '@/types'
+import { generateSignature } from '@/utils/auth'
 import { Index, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
 import { useThrottleFn } from 'solidjs-use'
-import { generateSignature } from '@/utils/auth'
-import IconClear from './icons/Clear'
-import IconX from './icons/X'
-import Picture from './icons/Picture'
-import MessageItem from './MessageItem'
 import ErrorMessageItem from './ErrorMessageItem'
-import type { ChatMessage, ErrorMessage } from '@/types'
+import IconClear from './icons/Clear'
+import Picture from './icons/Picture'
+import IconX from './icons/X'
+import MessageItem from './MessageItem'
 
 export default () => {
   let inputRef: HTMLTextAreaElement
@@ -86,25 +86,36 @@ export default () => {
       const nextMsg = arr[i + 1]
       // Include the current message if there is no next message or if the roles are different
       return !nextMsg || curMsg.role !== nextMsg.role
-    })
+    }).map(msg => ({
+    role: msg.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: msg.content }] // 确保 parts 是数组
+  }));
   }
   const requestWithLatestMessage = async() => {
     setLoading(true)
     setCurrentAssistantMessage('')
     setCurrentError(null)
     const storagePassword = localStorage.getItem('pass')
+    const timestamp = Date.now();
     try {
       const controller = new AbortController()
       setController(controller)
-      const requestMessageList = messageList().map(message => ({
-        role: message.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: message.content }],
-      })).slice(-maxHistoryMessages)
-      const timestamp = Date.now()
+      const requestMessageList = convertReqMsgList(messageList()).slice(-maxHistoryMessages);
+
+      console.log("📝 Request Messages:", JSON.stringify(requestMessageList, null, 2));
+
+      // const requestMessageList = messageList().map(message => ({
+      //   role: message.role === 'assistant' ? 'model' : 'user',
+      //   parts: [{ text: message.content }],
+      // })).slice(-maxHistoryMessages)
+      // const timestamp = Date.now()
+
+
       const response = await fetch('/api/generate', {
         method: 'POST',
         body: JSON.stringify({
-          messages: convertReqMsgList(requestMessageList),
+          messages: requestMessageList,
+          // messages: convertReqMsgList(requestMessageList),
           time: timestamp,
           pass: storagePassword,
           sign: await generateSignature({
@@ -116,7 +127,7 @@ export default () => {
       })
       if (!response.ok) {
         const error = await response.json()
-        console.error(error.error)
+        console.error("🚨 API Error:",error.error)
         setCurrentError(error.error)
         throw new Error('Request failed')
       }
@@ -145,7 +156,7 @@ export default () => {
       if (done)
         setCurrentAssistantMessage(currentAssistantMessage() + decoder.decode())
     } catch (e) {
-      console.error(e)
+      console.error("❌ Request Error:", e)
       setLoading(false)
       setController(null)
       return

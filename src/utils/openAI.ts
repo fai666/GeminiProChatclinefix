@@ -53,8 +53,5 @@ export const startChatAndSendMessageStream = async (history: ChatMessage[], newM
     },
   })
 
-  console.log(newMessage);
-  console.log(history);
-
   return encodedStream
 }
