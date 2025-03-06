@@ -7,6 +7,9 @@ const passList = sitePassword.split(',') || []
 
 export const post: APIRoute = async(context) => {
   const body = await context.request.json()
+
+  console.log("🔍 Received Request Body:", JSON.stringify(body, null, 2)); // 🛠️ 打印完整请求体
+
   const { sign, time, messages, pass } = body
 
   if (!messages || messages.length === 0 || messages[messages.length - 1].role !== 'user') {
@@ -44,16 +47,17 @@ export const post: APIRoute = async(context) => {
       parts: messages[messages.length - 1].parts.map(part => ({ text: part.text })) // 🛠️ 确保格式正确
     }
 
+    console.log("📤 Sending to Gemini API:", JSON.stringify({ history, newMessage }, null, 2)); // 🔍 打印要发送的数据
+
+    // 发送请求到 Gemini API
     // Start chat and send message with streaming 开始聊天并发送消息
     const responseStream = await startChatAndSendMessageStream(history, newMessage)
 
     return new Response(responseStream, { status: 200, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
 
-    console.log("🔍 Received Request Body:", req.body);
-
   } catch (error) {
-    console.error(error)
-    const errorMessage = error.message
+    console.error("🚨 Error:", error)
+    const errorMessage = error.message|| "Unknown error";
     const regex = /https?:\/\/[^\s]+/g
     const filteredMessage = errorMessage.replace(regex, '').trim()
     const messageParts = filteredMessage.split('[400 Bad Request]')
