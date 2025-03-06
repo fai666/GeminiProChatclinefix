@@ -25,15 +25,13 @@ export const startChatAndSendMessageStream = async (history: ChatMessage[], newM
       maxOutputTokens: 8000,
     },
     safetySettings: [
-      {category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE'},
-      {category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE'},
-      {category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE'},
-      {category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE'}
+      { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' }
     ],
   })
 
-  console.log(msg.parts),
-    
   // Use sendMessageStream for streaming responses
   // const result = await chat.sendMessageStream(newMessage)
 
@@ -42,12 +40,7 @@ export const startChatAndSendMessageStream = async (history: ChatMessage[], newM
 
   // GPT第二次修改，结合前端调用generate.ts的文件src\components\Generator.tsx
   const result = await chat.sendMessageStream(newMessage) 
-
-  console.log(newMessage);
   
-
-
-
   const encodedStream = new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder()
@@ -59,6 +52,9 @@ export const startChatAndSendMessageStream = async (history: ChatMessage[], newM
       controller.close()
     },
   })
+
+  console.log(newMessage);
+  console.log(history);
 
   return encodedStream
 }
