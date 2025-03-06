@@ -37,8 +37,13 @@ export const post: APIRoute = async(context) => {
     const history = messages.slice(0, -1) // All messages except the last one
     // 原代码
     // const newMessage = messages[messages.length - 1].parts.map(part => part.text).join('')
+    // GPT第一次修改
+    // const newMessage = messages[messages.length - 1].parts.map(part => ({ text: part.text }))
+    // GPT第二次修改，结合前端调用generate.ts的文件src\components\Generator.tsx
+    const newMessage = {
+      parts: messages[messages.length - 1].parts.map(part => ({ text: part.text })) // 🛠️ 确保格式正确
+    }
 
-    const newMessage = messages[messages.length - 1].parts.map(part => ({ text: part.text }))
 
 
     // Start chat and send message with streaming 开始聊天并发送消息

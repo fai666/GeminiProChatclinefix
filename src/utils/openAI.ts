@@ -35,7 +35,11 @@ export const startChatAndSendMessageStream = async (history: ChatMessage[], newM
   // const result = await chat.sendMessageStream(newMessage)
 
   // 发送流式请求
-  const result = await chat.sendMessageStream({ parts: [{ text: newMessage }] }) 
+  // const result = await chat.sendMessageStream({ parts: [{ text: newMessage }] }) 
+
+  // GPT第二次修改，结合前端调用generate.ts的文件src\components\Generator.tsx
+  const result = await chat.sendMessageStream(newMessage) 
+
 
 
   const encodedStream = new ReadableStream({
