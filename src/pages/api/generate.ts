@@ -40,9 +40,12 @@ export const post: APIRoute = async(context) => {
     const history = messages.slice(0, -1) // All messages except the last one
     // 原代码
     // const newMessage = messages[messages.length - 1].parts.map(part => part.text).join('')
+
     // GPT第一次修改
     // const newMessage = messages[messages.length - 1].parts.map(part => ({ text: part.text }))
-    // GPT第二次修改，结合前端调用generate.ts的文件src\components\Generator.tsx
+    // GPT第二次修改，// 20250306改 
+    // 确保 newMessage 传递的是 parts 数组，随着src\utils\openAI.ts中的parts更改而更改
+    // 更改后的 newMessage 传进去的其实是一个对象 `{ parts: [...] }`，而不是字符串！
     const newMessage = {
       parts: messages[messages.length - 1].parts.map(part => ({ text: part.text })) // 🛠️ 确保格式正确
     }
